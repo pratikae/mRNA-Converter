@@ -1,8 +1,7 @@
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class MRNAConverter {
-    static boolean validDNA(String DNA) {
+    public static boolean validDNA(String DNA) {
         DNA = DNA.toUpperCase();
         String valid = "ATCG";
 
@@ -16,12 +15,41 @@ public class MRNAConverter {
         return true;
     }
 
-    static String getMRNA(String DNA) {
+    public static String getMRNA(String DNA, int strandType) {
+        DNA = DNA.toUpperCase();
+        return strandType == 1 ? fromCoding(DNA) : fromTemplate(DNA);
+    }
 
+    private static String fromCoding(String DNA) {
         DNA = DNA.toUpperCase();
         String mRNA = "";
-        int i = 0;
-        while (i < DNA.length()) {
+        for (int i = 0; i < DNA.length(); i++) {
+            char base = DNA.charAt(i);
+            switch (base) {
+                case 'A':
+                    mRNA += "A";
+                    break;
+                case 'T':
+                    mRNA += "U";
+                    break;
+                case 'G':
+                    mRNA += "G";
+                    break;
+                case 'C':
+                    mRNA += "C";
+                    break;
+                default:
+                    System.out.println("invalid DNA sequence");
+                    break;
+            }
+        }
+        return mRNA;
+    }
+
+    private static String fromTemplate(String DNA) {
+        DNA = DNA.toUpperCase();
+        String mRNA = "";
+        for (int i = DNA.length() - 1; i >= 0; i--) {
             char base = DNA.charAt(i);
             switch (base) {
                 case 'A':
@@ -37,33 +65,10 @@ public class MRNAConverter {
                     mRNA += "G";
                     break;
                 default:
-                    System.out.println("Invalid DNA string");
-                    System.exit(1);
+                    System.out.println("invalid DNA sequence");
+                    break;
             }
-
-            i++;
         }
-
         return mRNA;
-    }
-
-
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner console = new Scanner(System.in);
-        while (true) {
-            System.out.print("Enter the DNA string (enter 0 to exit) >>> ");
-            String DNA = console.next().toUpperCase();
-            if (DNA.equals("0")) {
-                break;
-            }
-
-            if (validDNA(DNA)) {
-                System.out.println("Corresponding mRNA strand >>> " + getMRNA(DNA));
-            } else {
-                System.out.println("Invalid DNA string");
-            }
-        }
-
-
     }
 }
